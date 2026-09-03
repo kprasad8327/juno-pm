@@ -1,33 +1,32 @@
-# AI PRD · Juno
+🧮 Data Requirements
+Knowledge Base · Sources + Quantity
+Sources:
 
-> Module 3 · RAG / AI PRD. The AI product requirements doc with retrieval requirements, built with the **M3 · AI PRD Builder** (RAG design from the **M3 · RAG Architecture Decider**). Paste the tool's markdown over this file.
+• The Listing House Rules (PDF/Text)
 
-## Problem & user
+• The Damage Claim Form (JSON)
 
-_The user problem and who has it._
+• The Last 48 hours of Guest/Host Messaging History
 
-_____
+Quantity: Limit message ingestion to the specific booking ID where the dispute occurred to prevent cross-contamination of user history.
 
-## Solution overview
+Sync Frequency & Refresh
+Real-time trigger: The knowledge base must refresh its index instantly upon submission of a new damage claim or new message in the dispute thread.
 
-_What Juno does, at a glance._
+Requirement: To ensure legal accuracy, the “House Rules” segment must be a live pull from the production database at the time of claim filing.
 
-_____
+📐 Model Requirements
+Retrieval Strategy · Hybrid Approach
+Justification: We need the AI to find specific details (exact line in the house rules, specific item in a photo caption) while also understanding broader context of the conversation (whether a guest is being aggressive or genuinely confused).
 
-## Retrieval requirements (RAG)
+💰 AI Costs & Latency
+Context Requirement · Top-K = 8
+Limit: Top 8 retrieval segments.
 
-- **Sources:** _what Juno retrieves from._
-- **Chunking / indexing:** _strategy + why._
-- **Grounding rule:** _e.g. no answer without a cited source._
-- **Freshness:** _how current the data must be._
+Justification: Tell the AI to only look at the 8 most relevant snippets from the rules and chat logs. Too much → slow, expensive, lost focus on key facts. This keeps response < 3s so the user doesn’t feel the app is stuck.
 
-## Requirements
+🤝 AI User Experience
+Grounded Trust Requirement
+Verification: The AI cannot just give a Yes/No answer. It must show the receipts, every decision points directly to the specific rule or photo it used.
 
-| # | Requirement | Priority | Acceptance criteria |
-|---|---|---|---|
-| 1 | _…_ | Must | _…_ |
-| 2 | _…_ | Should | _…_ |
-
-## Out of scope
-
-_____
+Fail-safe: If the AI can’t find a clear reason to charge a guest, it must stop and say “I don’t have enough evidence to decide,” and pass the case to a human. We prefer cautious over guessing.
